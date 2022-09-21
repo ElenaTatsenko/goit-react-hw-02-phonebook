@@ -1,73 +1,70 @@
 import React, { Component } from "react";
-//import ContactForm from "./ContactForm/ContactForm";
-import ContactList from "./ContactList/ContactList"
 import { nanoid } from 'nanoid';
-//import PropTypes from 'prop-types'
+
+import ContactForm from "./ContactForm/ContactForm";
+import ContactList from "./ContactList/ContactList";
+import ContactFilter from "./ContactFilter/ContactFilter";
+
 
 class App extends Component {
   state = {
   contacts:  [{id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
             {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
             {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-            { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },],
-    name: '',
-    number: ''
-  }
- 
-  addContact = (contactId) => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id === contactId)
-    }))
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },],
+    filter: '',
   }
 
-  hendleInputChange = event => {
-    const { name, value } = event.currentTarget
-    this.setState({
-      [name]: value
-    });
+  addContact = ({ name, number }) => {
+    const newContact = {
+            id: nanoid(),
+            name,
+            number,
+    };
+     const normalizeNewContact = name.toLowerCase();
+      const addedName = this.state.contacts.find(contact => contact.name.toLowerCase() === normalizeNewContact);
+        
+        if (addedName) {
+            return alert(`${name} is already in contacts.`);
+        }
+
+        this.setState(({ contacts }) => ({
+            contacts: [  newContact, ...contacts],
+        }));
+
+  }
+
+  deleteContact = (contactId) => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId)
+    }))
+  };
+
+  changeFilter = event => {
+    this.setState({ filter: event.currentTarget.value });
+  }
+
+  getFilterContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+  
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
   };
   
-  inputNameId = nanoid();
-  inputTelId = nanoid();
-
+    
   render() {
-    const { contacts } = this.state
-    
-    
+    const {  filter } = this.state
+    const filterContacts = this.getFilterContacts();
+       
     return (
       <>
-        
-        <form onSubmit={this.handlerOnSubmit}>
-          <label htmlFor={this.inputNameId}>
-            Name
-            </label>
-          <input
-            id={this.inputNameId}
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            value={this.state.name}
-            onChange={this.hendleInputChange}
-          />
-          <label htmlFor={this.inputNameId}>
-            Number
-            </label>
-          <input
-            id={this.inputTelId}
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-            value={this.state.number}
-            onChange={this.hendleInputChange}
-            />
-          <button type="submit">Add contact</button>
-        </form>
+        <h1>Phonebook</h1>
+        <ContactForm onSubmit={this.addContact}></ContactForm>        
         <h2>Contacts</h2>
-        <ContactList contacts={contacts}></ContactList>
+        <ContactFilter value={filter} onChange={this.changeFilter}></ContactFilter>
+        <ContactList contacts={filterContacts} onDeleteContact={this.deleteContact}></ContactList>
       </>
      
     );
