@@ -10,7 +10,8 @@ class App extends Component {
             {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
             {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
             { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },],
-    name: ''
+    name: '',
+    number: ''
   }
  
   addContact = (contactId) => {
@@ -19,11 +20,15 @@ class App extends Component {
     }))
   }
 
-  hendlerInputChange = event => {
-    this.setState({name: event.currentTarget.value})
-  }
+  hendleInputChange = event => {
+    const { name, value } = event.currentTarget
+    this.setState({
+      [name]: value
+    });
+  };
   
   inputNameId = nanoid();
+  inputTelId = nanoid();
 
   render() {
     const { contacts } = this.state
@@ -31,6 +36,7 @@ class App extends Component {
     
     return (
       <>
+        
         <form onSubmit={this.handlerOnSubmit}>
           <label htmlFor={this.inputNameId}>
             Name
@@ -43,10 +49,24 @@ class App extends Component {
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
             value={this.state.name}
-            onChange={this.hendlerInputChange}
+            onChange={this.hendleInputChange}
+          />
+          <label htmlFor={this.inputNameId}>
+            Number
+            </label>
+          <input
+            id={this.inputTelId}
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+            value={this.state.number}
+            onChange={this.hendleInputChange}
             />
           <button type="submit">Add contact</button>
-          </form>
+        </form>
+        <h2>Contacts</h2>
         <ContactList contacts={contacts}></ContactList>
       </>
      
