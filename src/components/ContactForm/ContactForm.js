@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
+import css from '../ContactForm/ContactForm.module.css'
 
 class ContactForm extends Component {
     state = {
@@ -33,10 +34,11 @@ class ContactForm extends Component {
 
     render() {
         return (
-     <form onSubmit={this.handleSubmit}>
-        <label htmlFor={this.inputNameId}>
+     <form className={css.conactForm} onSubmit={this.handleSubmit}>
+        <label htmlFor={this.inputNameId} className={css.conactFormLabel}>
             Name
           <input
+            className={css.conactFormItem}
             id={this.inputNameId}
             type="text"
             name="name"
@@ -47,9 +49,10 @@ class ContactForm extends Component {
             onChange={this.hendleInputChange}>
           </input>
         </label>
-        <label htmlFor={this.inputTelId}>
+        <label htmlFor={this.inputTelId} className={css.conactFormLabel}>
             Number
           <input
+            className={css.conactFormItem}
             id={this.inputTelId}
             type="tel"
             name="number"
@@ -60,7 +63,7 @@ class ContactForm extends Component {
             onChange={this.hendleInputChange}>
           </input>
         </label>
-        <button type="submit">Add contact</button>
+        <button className={css.contactFormBtn } type="submit">Add contact</button>
       </form>
         );
     }
